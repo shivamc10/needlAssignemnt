@@ -1,6 +1,6 @@
 from string import ascii_uppercase
 from openpyxl import load_workbook, Workbook
-import os
+import os, sys
 
 
 class NeedlAssignment:
@@ -143,7 +143,7 @@ class NeedlAssignment:
                 elif tmp[0].isdigit():
                     res += tmp
 
-                # if the keyword is cell no in the same sheet
+                # if the keyword is cell no and in the same sheet
                 else:
                     row = self.wb[sheet_name][tmp].row
                     val = self.wb[sheet_name].cell(row=row, column=2).value
@@ -191,8 +191,11 @@ class NeedlAssignment:
                         continue
                     self.res[cell.row] = self.formula(cell.value.replace('=', ''))
 
-        output = '/Users/shivamchoubey/Desktop/Personal/Assignment/needlAssignment.xlsx'
-        os.remove(output)
+        output = './needlAssignment.xlsx'
+        try:
+            os.remove(output)
+        except:
+            pass
         out = Workbook()
         res_sheet = out.active
         res_sheet.title = 'Formula'
@@ -203,5 +206,8 @@ class NeedlAssignment:
 
 
 if __name__ == "__main__":
-    assignment = NeedlAssignment('/Users/shivamchoubey/Desktop/Personal/Assignment/NF-SA Template 160519.xlsx')
+    if len(sys.argv) < 2:
+        print('arguments passed incorrectly.\nplease provide a file path for the data location')
+        sys.exit(0)
+    assignment = NeedlAssignment(sys.argv[1])
     assignment.execute()
